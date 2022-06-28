@@ -1,7 +1,17 @@
 const app = require('express')();
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
+const limiter = rateLimit({
+	windowMs: 60 * 1000, // 1 minute
+	max: 60, // Limit each IP to 60 requests per `window`
+  message: 'Too many requests!!',
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
+app.use(limiter)
 app.use(cors());
 app.use('/mal', require('./routes'))
 

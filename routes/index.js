@@ -32,9 +32,9 @@ router
         token_type: access.token_type
       }
 
-      res.send({success: true, data: authresponse || null});
+      res.send({ success: true, data: authresponse });
     } catch (error) {
-      res.send(null);
+      res.send({ success: false, data: error });
     }
   })
 
