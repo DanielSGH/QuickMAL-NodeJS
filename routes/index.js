@@ -38,6 +38,11 @@ router
     }
   })
 
+router
+  .all('/oauthwebflow', (req, res) => {
+    res.redirect(`https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id=${CLIENT_ID}&code_challenge=${req.query.challenge}`)
+  })
+
 /*
 router
   .get('/cors', async (req, res) => {
