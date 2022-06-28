@@ -32,7 +32,7 @@ router
 
       res.send(authresponse || null);
     } catch (error) {
-      res.send('error', error);
+      res.send(null);
     }
   })
 
