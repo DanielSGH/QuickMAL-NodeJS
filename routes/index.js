@@ -23,6 +23,8 @@ router
 
       const response = await fetch('https://myanimelist.net/v1/oauth2/token', args);
       const access = await response.json();
+      if (!response.ok) return res.send({ success: false, data: access })
+
       const authresponse = {
         access_token: access.access_token,
         expires_in: access.expires_in * 1000 + Date.now(),
@@ -30,7 +32,7 @@ router
         token_type: access.token_type
       }
 
-      res.send(authresponse || null);
+      res.send({success: true, data: authresponse || null});
     } catch (error) {
       res.send(null);
     }
