@@ -4,7 +4,6 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 require('dotenv').config();
 
 const CLIENT_ID = process.env.API_CLIENT_ID;
-// roll back to v7 if this doesn't work
 
 router
   .get('/oauth', async (req, res) => {
