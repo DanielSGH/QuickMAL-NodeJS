@@ -8,17 +8,24 @@ const CLIENT_ID = process.env.API_CLIENT_ID;
 router
   .get('/oauth', async (req, res) => {
     try {
+      const params = req.query.token
+        ? {
+            'grant_type': 'refresh_token',
+            'refresh_token': req.query.token,
+          } : {
+            'code': req.query.authcode,
+            'code_verifier': req.query.verifier,
+            'grant_type': 'authorization_code',
+            };
+      
+      params.client_id = CLIENT_ID;
+
       const args = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: new URLSearchParams({
-          'client_id': CLIENT_ID,
-          'code': req.query.authcode,
-          'code_verifier': req.query.verifier,
-          'grant_type': 'authorization_code',
-        })
+        body: new URLSearchParams(params)
       }
 
       const response = await fetch('https://myanimelist.net/v1/oauth2/token', args);
@@ -43,38 +50,38 @@ router
     res.redirect(`https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id=${CLIENT_ID}&code_challenge=${req.query.challenge}`)
   })
 
-router
-  .get('/refresh', async (req, res) => {
-    try {
-      const params = {
-        'client_id': CLIENT_ID,
-        'grant_type': 'refresh_token',
-        'refresh_token': req.query.token,
-      }
+// router
+//   .get('/refresh', async (req, res) => {
+//     try {
+//       const params = {
+//         'client_id': CLIENT_ID,
+//         'grant_type': 'refresh_token',
+//         'refresh_token': req.query.token,
+//       }
   
-      const args = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams(params)
-      };
+//       const args = {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/x-www-form-urlencoded'
+//         },
+//         body: new URLSearchParams(params)
+//       };
 
-      const response = await fetch('https://myanimelist.net/v1/oauth2/token', args);
-      const access = await response.json();
+//       const response = await fetch('https://myanimelist.net/v1/oauth2/token', args);
+//       const access = await response.json();
 
-      const authresponse = {
-        access_token: access.access_token,
-        expires_in: access.expires_in + Date.now(),
-        refresh_token: access.refresh_token,
-        token_type: access.token_type
-      }
+//       const authresponse = {
+//         access_token: access.access_token,
+//         expires_in: access.expires_in + Date.now(),
+//         refresh_token: access.refresh_token,
+//         token_type: access.token_type
+//       }
 
-      res.send({ success: true, data: authresponse });
-    } catch (error) {
-      res.send({ success: false, data: error });
-    }
-  })
+//       res.send({ success: true, data: authresponse });
+//     } catch (error) {
+//       res.send({ success: false, data: error });
+//     }
+//   })
 
 /*
 router
