@@ -53,7 +53,7 @@ router
       }
   
       const args = {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
