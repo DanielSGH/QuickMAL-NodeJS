@@ -44,7 +44,7 @@ router
   })
 
 router
-  .get('/refresh', (req, res) => {
+  .get('/refresh', async (req, res) => {
     try {
       const params = {
         'client_id': CLIENT_ID,
