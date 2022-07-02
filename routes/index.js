@@ -43,6 +43,39 @@ router
     res.redirect(`https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id=${CLIENT_ID}&code_challenge=${req.query.challenge}`)
   })
 
+router
+  .get('/refresh', (req, res) => {
+    const params = {
+      'client_id': CLIENT_ID,
+      'grant_type': 'refresh_token',
+      'refresh_token': req.query.token,
+    }
+
+    const args = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams(params)
+    };
+
+    try {
+      const response = await fetch('https://myanimelist.net/v1/oauth2/token', args);
+      const access = await response.json();
+
+      const authresponse = {
+        access_token: access.access_token,
+        expires_in: access.expires_in + Date.now(),
+        refresh_token: access.refresh_token,
+        token_type: access.token_type
+      }
+
+      res.send({ success: true, data: authresponse });
+    } catch (error) {
+      res.send({ success: false, data: error });
+    }
+  })
+
 /*
 router
   .get('/cors', async (req, res) => {
